@@ -23,6 +23,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }: any) {
   const [authed, setAuthed] = React.useState<boolean>(false);
+  
 
   return <authContext.Provider value={{
     authed: authed,

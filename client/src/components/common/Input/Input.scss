@@ -1,0 +1,27 @@
+@use "../../../styles/_colors.scss" as c;
+@use "../../../styles/sizes" as s;
+@use "../../../styles/mixins" as m;
+
+
+.field {
+
+    margin-bottom: 18px;
+
+    label {
+        display: block;
+        color: c.$main-color;
+        font-size: s.$text;
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    input {
+        width: 100%;
+        border: 1px solid c.$text-color;
+        box-sizing: border-box;
+        outline: none;
+        padding: 10px 15px;
+        border-radius: 10px;
+        color: c.$text-color;
+    }
+}

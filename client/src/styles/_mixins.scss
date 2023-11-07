@@ -1,0 +1,22 @@
+@use './sizes' as s;
+
+@mixin link-style($color) {
+    font-size: 14px;
+    text-decoration: none;
+    color: $color;
+}
+
+@mixin button-style {
+    @include link-style(#fff);
+    border: 2px solid #fff;  
+    border-radius: 10px;
+    padding: 8px 15px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin container {
+    width: s.$container-size;
+    margin: 0 auto;
+}

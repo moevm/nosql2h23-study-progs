@@ -1,0 +1,50 @@
+@use "../../../styles/_colors.scss" as c;
+@use "../../../styles/sizes" as s;
+@use "../../../styles/mixins" as m;
+
+.loginBody {
+    height: 90vh;
+
+    
+}
+
+.container {
+    @include m.container;
+    height: 100%;
+}
+
+.form-container {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.loginBody-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.login-form-block {
+    padding: 30px 0;
+    width: 50%;
+    height: 300px;
+    background: #fff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+button {
+    @include m.button-style;
+    cursor: pointer;
+    background-color: c.$main-color;
+    width: 50%;
+    margin: 25px auto 0;
+}
+
+.link {
+    @include m.link-style(c.$main-color);
+    display: block;
+    margin: 15px auto 0;
+    width: 50%;
+    text-align: center;
+}

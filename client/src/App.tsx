@@ -3,15 +3,10 @@ import { DocumentsAPIs } from './api/documents.api';
 import './App.scss';
 import { Routes, Link, Route } from 'react-router-dom';
 import Nav from './components/nav/nav';
-import Login from './components/login/login';
+import Login from './components/login/LoginPage';
 import RequireAuth from './components/requireAuth';
-
-const Home = () => <h1>Home (Public)</h1>;
-const Pricing = () => <h1>Pricing (Public)</h1>;
-
-const Dashboard = () => <h1>Dashboard (Private)</h1>;
-const Settings = () => <h1>Settings (Private)</h1>;
-
+import Signup from './components/signup/SignupPage';
+import MainPage from './components/mainPage/MainPage';
 
 
 function App() {
@@ -29,21 +24,14 @@ function App() {
 
     return (
         <div className="app">
-            <Nav />
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/pricing" element={<Pricing />} />
-                <Route path="/dashboard" element={
-                    <RequireAuth>
-                        <Dashboard />
-                    </RequireAuth>
-                } />
-                <Route path="/settings" element={
-                    <RequireAuth>
-                        <Settings />
-                    </RequireAuth>
-                } />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/*" element={
+                    <RequireAuth>
+                        <MainPage />
+                    </RequireAuth>
+                } />
             </Routes>
         </div>
     )
