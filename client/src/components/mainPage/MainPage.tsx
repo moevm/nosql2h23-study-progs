@@ -1,29 +1,46 @@
-import React, { useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import CatalogPage from '../catalogPage/CatalogPage';
-import TrainingPlanPage from '../trainingPlanPage/TrainingPlanPage';
-import { NavLink } from 'react-router-dom';
-
+import React, { useEffect } from "react";
+import {
+	Route,
+	Routes,
+	useNavigate,
+} from "react-router-dom";
+import Menu from "../menu/Menu";
+import { useAuth } from "../../contexts/AuthContext";
+import './MainPage.scss';
+import Nav from "../nav/nav";
+import EducationProgramList from "../educationProgramList/EducationProgramList";
+import TrainingPlanComparison from "../trainingPlanComparison/TrainingPlanComparison";
+import DisciplineProgramList from "../disciplineProgramList/DisciplineProgramList";
+import TrainingPlanList from "../TrainingPlanList/TrainingPlanList";
 
 const MainPage = () => {
+	const { setAuthed } = useAuth();
+	const navigate = useNavigate();
 
+	const handleLogout = () => {
+		setAuthed(false);
+		navigate("/");
+	};
 
-  return (
-    <div>
-        <nav>Здесь будет меню
-
-            <NavLink to="/catalog">catalog</NavLink>
-            <NavLink to="/training-plan">plan</NavLink>
-            <NavLink to="/login">login</NavLink>
-        </nav>
-        <div className="page_container">
-            <Routes>
-                <Route path="/catalog" element={<CatalogPage />} />
-                <Route path="/training-plan" element={<TrainingPlanPage />} />
-            </Routes>
-        </div>
-    </div>
-  )
-}
+	return (
+		<div>
+			<Menu>
+				<div className="menuButtons">
+					<button onClick={() => console.log("экспорт")}>Экспорт бд</button>
+					<button onClick={handleLogout}>Выйти</button>
+				</div>
+			</Menu>
+			<Nav/>
+			<div className="page_container">
+				<Routes>
+					<Route path="/" element={<EducationProgramList />} />
+					<Route path="/training-plan-comparison" element={<TrainingPlanComparison />} />
+					<Route path="/discipline-programs-list" element={<DisciplineProgramList />} />
+					<Route path="/training-plan-list" element={<TrainingPlanList />} />
+				</Routes>
+			</div>
+		</div>
+	);
+};
 
 export default MainPage;
