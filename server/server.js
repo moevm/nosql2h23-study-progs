@@ -44,6 +44,26 @@ app.get('/trainingPlans', async (req, res) => {
     }
 })
 
+app.get('/TrainingPlansStats', async (req, res) => {
+    const session = db.session();
+    try {
+        const result = await getResultByQuery('MATCH (plan:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(ed:EducationalProgram)<-[:PROFILE]-(dir:Direction) RETURN ed.name, plan.name, plan.year, ed.form_of_study, dir.code, dir.name;')
+        const records = result.records.map(record => ({ 
+            TrainingPlanName: record.get('plan.name'),
+            EducationalProgramName: record.get('ed.name'),
+            DirectionCode: record.get('dir.code'),
+            DirectionName: record.get('dir.name'),
+            Year: record.get('plan.year').low,
+            FormOfStudy: record.get('ed.form_of_study'),
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+})
+
 app.get('/EducationalProgramStats/:EdName', async (req, res) => {
     const session = db.session();
     try {

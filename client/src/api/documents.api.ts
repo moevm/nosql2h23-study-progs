@@ -6,6 +6,10 @@ export class DocumentsAPIs {
         return axiosInstance.get('/trainingPlans');
     }
 
+    static async getTrainingPlanStats() {
+        return axiosInstance.get('/TrainingPlansStats');
+    }
+
     static async getAllEducationalPrograms() {
         return axiosInstance.get('/EducationalPrograms');
     }
