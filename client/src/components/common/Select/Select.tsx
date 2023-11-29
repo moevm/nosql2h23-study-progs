@@ -1,9 +1,25 @@
-import React from 'react'
+import React, { useState } from "react";
 
-const Select = () => {
-  return (
-    <div>Select</div>
-  )
-}
+const Select = ({
+	options,
+	onChange,
+	label
+}: {
+	options: string[];
+	onChange: (paramName: string, paramValue: string) => void;
+	label: string
+}) => {
 
-export default Select
+	return (
+		<div>
+			<div className="label">{label}</div>
+			<select className="select" onChange={(e) => onChange(label, e.target.value)}>
+				{options.map((option) => (
+					<option value={option} key={option}>{option}</option>
+				))}
+			</select>
+		</div>
+	);
+};
+
+export default Select;

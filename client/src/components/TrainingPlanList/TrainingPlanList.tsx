@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import Search from "../search/Search";
 import EducationElementLink from "../educationElementLink/EducationElementLink";
+import Select from "../common/Select/Select";
+
+interface IFilterParam {
+	filterParamName: string;
+	filterParamValue: string;
+}
 
 const TrainingPlanList = () => {
 	const [data, setData] = useState([
@@ -23,6 +29,30 @@ const TrainingPlanList = () => {
 		},
 	]);
 
+	const filterParams = useRef<IFilterParam[]>([]);
+
+	const handleFiltering = () => {
+
+	}
+
+	const onSelectFilterParam = (paramName: string, paramValue: string) => {
+		const filterParam = filterParams.current.find((param) => param.filterParamName === paramName)
+
+		if(!!filterParam) {
+			filterParam.filterParamValue = paramValue
+		} else {
+
+			const newFilterParam: IFilterParam = {
+				filterParamName: paramName,
+				filterParamValue: paramValue
+			}
+
+			filterParams.current.push(newFilterParam)
+		}
+
+		console.log(filterParams.current);
+	}
+
 	return (
 		<div className="TrainingPlanList">
 			<div className="container">
@@ -35,12 +65,16 @@ const TrainingPlanList = () => {
 					</div>
 					<div className="TrainingPlanList__body">
 						<Search buttons={<button>filter</button>} />
+						<div className="filteringParams">
+							<Select label="направление подготовки" onChange={onSelectFilterParam} options={["1", "2", "3"]} />
+						</div>
 						<div className="list">
-							{data.map((program) => (
+							{data.map((plan) => (
 								<EducationElementLink
-									to={`training-plan-list/${program.id}`}
+									key={plan.id}
+									to={`training-plan-list/${plan.id}`}
 								>
-									{program.name}
+									{plan.name}
 								</EducationElementLink>
 							))}
 						</div>
