@@ -88,6 +88,29 @@ app.get('/TrainingPlanComparison/:plan1/:plan2', async (req, res) => {
     }
 })
 
+app.get('/CommonDisciplines/:plan1/:plan2', async (req, res) => {
+    const session = db.session();
+    try {
+        const result = await getResultByQuery(`MATCH (plan:TrainingPlan)-[:HAS]->(dis:Discipline)
+        WHERE plan.Id = "${req.params.plan1}" OR plan.Id = "${req.params.plan2}"
+        RETURN DISTINCT dis.name, EXISTS {
+          (:TrainingPlan {Id: "${req.params.plan1}"})-[:HAS]->(:Discipline {name: dis.name})
+        } AS Plan1, EXISTS {
+          (:TrainingPlan {Id: "${req.params.plan2}"})-[:HAS]->(:Discipline {name: dis.name})
+        } AS Plan2`)
+        const records = result.records.map(record => ({ 
+            DisciplineName: record.get('dis.name'),
+            IsDisciplineInPlan1: record.get('Plan1'),
+            IsDisciplineInPlan2: record.get('Plan2')
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+})
+
 app.get('/api2', async (req, res) => {
     const session = db.session({
         database: "neo4j",

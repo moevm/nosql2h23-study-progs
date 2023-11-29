@@ -18,13 +18,13 @@ const TrainingPlanList = () => {
 		return await DocumentsAPIs.getAllTrainingPlans();
 	}
 
-	const getPlanComp = async () => {
-		return await DocumentsAPIs.getPlanComparison('338-20', '308-23');
+	const getCommonDis = async () => {
+		return await DocumentsAPIs.getCommonAndDifferentDisciplines('338-20', '308-23');
 	}
 
 	useEffect(() => {
 		getTrainingPlanList().then((res) => console.log(res.data));
-		getPlanComp().then((res) => console.log(res.data));
+		getCommonDis().then((res) => console.log(res.data));
 	}, [])
 
 
