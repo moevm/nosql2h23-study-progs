@@ -13,7 +13,7 @@ const EducationProgramList = () => {
 	}
 
 	useEffect(() => {
-		getEducationalProgramList().then((res) => console.log(res));
+		getEducationalProgramList().then((res) => console.log(res.data));
 	}, [])
 
 	return (

@@ -13,23 +13,18 @@ app.listen(4200)
 
 
 app.get('/EducationalProgram', async (req, res) => {
-    res.json(await getResultByQuery('MATCH (n:EducationalProgram) RETURN n LIMIT 25;')) 
-    
+    const session = db.session();
+    try {
+        const result = await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name;')
+        const records = result.records.map(record => record.get('n.name'));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+    //res.json(await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name;')) 
 })
-
-
-async function getResultByQuery(query) {
-    const session = db.session({
-        database: "neo4j",
-        defaultAccessMode: neo4j.session.READ
-    })
-    
-    const result = await session.run(query)
-
-    session.close()
-
-    return result;
-}
 
 app.get('/trainingPlans', async (req, res) => {
 
@@ -51,3 +46,15 @@ app.get('/api2', async (req, res) => {
     session.close()
 })
 
+async function getResultByQuery(query) {
+    const session = db.session({
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.READ
+    })
+    
+    const result = await session.run(query)
+
+    session.close()
+
+    return result;
+}
