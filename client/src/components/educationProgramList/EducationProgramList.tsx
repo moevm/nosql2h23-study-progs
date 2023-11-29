@@ -12,8 +12,13 @@ const EducationProgramList = () => {
 		return await DocumentsAPIs.getAllEducationalPrograms();
 	}
 
+	/*const getEducationalProgramStats = async () => {
+		return await DocumentsAPIs.getEducationalProgramStats("math_support_for_software_and_information_systems");
+	}*/
+
 	useEffect(() => {
-		getEducationalProgramList().then((res) => console.log(res));
+		getEducationalProgramList().then((res) => console.log(res.data));
+		//getEducationalProgramStats().then((res) => console.log(res.data));
 	}, [])
 
 	return (

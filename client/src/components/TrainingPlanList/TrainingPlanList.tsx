@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Search from "../search/Search";
 import EducationElementLink from "../educationElementLink/EducationElementLink";
@@ -12,7 +12,23 @@ interface IFilterParam {
 
 const TrainingPlanList = () => {
 
-	const [data, setData] = useState([
+	const [data, setData] = useState([]);
+
+	const getTrainingPlanList = async () => {
+		return await DocumentsAPIs.getAllTrainingPlans();
+	}
+
+	const getCommonDis = async () => {
+		return await DocumentsAPIs.getCommonAndDifferentDisciplines('338-20', '308-23');
+	}
+
+	useEffect(() => {
+		getTrainingPlanList().then((res) => console.log(res.data));
+		getCommonDis().then((res) => console.log(res.data));
+	}, [])
+
+
+	/*const [data, setData] = useState([
 		{
 			id: 1,
 			name: "учебный план 1",
@@ -29,7 +45,7 @@ const TrainingPlanList = () => {
 			id: 4,
 			name: "учебный план 4",
 		},
-	]);
+	]);*/
 
 	const filterParams = useRef<IFilterParam[]>([]);
 
@@ -71,14 +87,14 @@ const TrainingPlanList = () => {
 							<Select label="направление подготовки" onChange={onSelectFilterParam} options={["1", "2", "3"]} />
 						</div>
 						<div className="list">
-							{data.map((plan) => (
+							{/*data.map((plan) => (
 								<EducationElementLink
 									key={plan.id}
 									to={`training-plan-list/${plan.id}`}
 								>
 									{plan.name}
 								</EducationElementLink>
-							))}
+							))*/}
 						</div>
 					</div>
 				</div>
