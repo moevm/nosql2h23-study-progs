@@ -13,7 +13,10 @@ export class DocumentsAPIs {
     static async getEducationalProgramStats(EdName: string) {
         return axiosInstance.get(`/EducationalProgramStats/${EdName}`);
     }
-
+    
+    static async getPlanComparison(plan1: string, plan2: string) {
+        return axiosInstance.get(`/TrainingPlanComparison/${plan1}/${plan2}`);
+    }
 
     // static async getAllEducationalPrograms() {
 

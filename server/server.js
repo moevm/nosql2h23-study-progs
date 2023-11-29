@@ -61,6 +61,33 @@ app.get('/EducationalProgramStats/:EdName', async (req, res) => {
     }
 })
 
+app.get('/TrainingPlanComparison/:plan1/:plan2', async (req, res) => {
+    const session = db.session();
+    try {
+        const result = await getResultByQuery(`MATCH (n:TrainingPlan {Id: "${req.params.plan1}"})-[has1:HAS]->(dis:Discipline)<-[has2:HAS]-(m:TrainingPlan {Id: "${req.params.plan2}"}) RETURN dis.name, has1.total_labor_hours, has1.practice_hours, has1.lecture_hours, has1.laboratory_hours, has2.total_labor_hours, has2.practice_hours, has2.lecture_hours, has2.laboratory_hours;`)
+        const records = result.records.map(record => ({ 
+            Discipline: record.get('dis.name'),
+            Plan1: {
+                TotalLaborHours: record.get('has1.total_labor_hours').low,
+                PracticeHours: record.get('has1.practice_hours').low,
+                LectureHours: record.get('has1.lecture_hours').low,
+                LaboratoryHours: record.get('has1.laboratory_hours').low,
+            },
+            Plan2: {
+                TotalLaborHours: record.get('has2.total_labor_hours').low,
+                PracticeHours: record.get('has2.practice_hours').low,
+                LectureHours: record.get('has2.lecture_hours').low,
+                LaboratoryHours: record.get('has2.laboratory_hours').low,
+            },
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+})
+
 app.get('/api2', async (req, res) => {
     const session = db.session({
         database: "neo4j",

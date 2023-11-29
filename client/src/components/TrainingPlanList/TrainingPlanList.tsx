@@ -14,12 +14,17 @@ const TrainingPlanList = () => {
 
 	const [data, setData] = useState([]);
 
-	const getTrainingPlanListList = async () => {
+	const getTrainingPlanList = async () => {
 		return await DocumentsAPIs.getAllTrainingPlans();
 	}
 
+	const getPlanComp = async () => {
+		return await DocumentsAPIs.getPlanComparison('338-20', '308-23');
+	}
+
 	useEffect(() => {
-		getTrainingPlanListList().then((res) => console.log(res.data));
+		getTrainingPlanList().then((res) => console.log(res.data));
+		getPlanComp().then((res) => console.log(res.data));
 	}, [])
 
 
