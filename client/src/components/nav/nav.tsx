@@ -9,7 +9,7 @@ const Nav = () => {
 			<div className="container">
 				<ul>
 					<li>
-						<Link to="/">Образовательные программы</Link>
+						<Link to="/education-program-list">Образовательные программы</Link>
 					</li>
 					<li>
 						<Link to="/discipline-programs-list">Учебные программы</Link>

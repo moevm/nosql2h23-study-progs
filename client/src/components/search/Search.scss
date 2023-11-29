@@ -1,0 +1,24 @@
+@use '../../styles/_colors' as c;
+
+.search {
+
+    display: flex;
+
+    input {
+        outline: none;
+        border: 1px solid #9C9898;
+        padding: 15px;
+        color: c.$main-color;
+    }
+
+    .searchButton {
+        background-color: c.$main-color;
+        border: none;
+        transition: all .3s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: lighten($color: c.$main-color, $amount: 10);
+        }
+    }
+}

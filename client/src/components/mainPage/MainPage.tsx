@@ -33,7 +33,7 @@ const MainPage = () => {
 			<Nav/>
 			<div className="page_container">
 				<Routes>
-					<Route path="/" element={<EducationProgramList />} />
+					<Route path="/education-program-list" element={<EducationProgramList />} />
 					<Route path="/training-plan-comparison" element={<TrainingPlanComparison />} />
 					<Route path="/discipline-programs-list" element={<DisciplineProgramList />} />
 					<Route path="/training-plan-list" element={<TrainingPlanList />} />
