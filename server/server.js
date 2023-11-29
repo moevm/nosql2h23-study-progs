@@ -12,18 +12,20 @@ app.use(cors())
 app.listen(4200)
 
 
-app.get('/EducationalProgram', async (req, res) => {
+app.get('/EducationalPrograms', async (req, res) => {
     const session = db.session();
     try {
-        const result = await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name;')
-        const records = result.records.map(record => record.get('n.name'));
+        const result = await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name, n.latin_name;')
+        const records = result.records.map(record => ({ 
+            Name: record.get('n.name'),
+            LatinName: record.get('n.latin_name')
+        }));
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
     } finally {
         await session.close();
     }
-    //res.json(await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name;')) 
 })
 
 app.get('/trainingPlans', async (req, res) => {
@@ -40,7 +42,23 @@ app.get('/trainingPlans', async (req, res) => {
     } finally {
         await session.close();
     }
-    //res.json(await getResultByQuery('MATCH (n:Plan) RETURN n LIMIT 25;'));
+})
+
+app.get('/EducationalProgramStats/:EdName', async (req, res) => {
+    const session = db.session();
+    try {
+        const result = await getResultByQuery(`MATCH (n:EducationalProgram {latin_name: "${req.params.EdName}"}) RETURN n.education_level, n.form_of_study, n.training_period;`)
+        const records = result.records.map(record => ({ 
+            EducationLevel: record.get('n.education_level'),
+            FormOfStudy: record.get('n.form_of_study'),
+            TrainingPeriod: record.get('n.training_period')
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
 })
 
 app.get('/api2', async (req, res) => {
