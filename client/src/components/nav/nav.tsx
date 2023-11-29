@@ -1,34 +1,29 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import './nav.scss';
+
 
 const Nav = () => {
-  const { authed, setAuthed } = useAuth();
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setAuthed(false);
-    navigate('/');
-  };
-
-  return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/pricing">Pricing</Link>
-        </li>
-        <li>
-          <Link to="/settings">settings</Link>
-        </li>
-        <li>
-          <Link to="/dashboard">dashoard</Link>
-        </li>
-      </ul>
-      {authed && <button onClick={handleLogout}>Logout</button>}
-    </nav>
-  );
+	return (
+		<nav className="nav">
+			<div className="container">
+				<ul>
+					<li>
+						<Link to="/education-program-list">Образовательные программы</Link>
+					</li>
+					<li>
+						<Link to="/discipline-programs-list">Учебные программы</Link>
+					</li>
+					<li>
+						<Link to="/training-plan-list">Учебные планы</Link>
+					</li>
+					<li>
+						<Link to="/training-plan-comparison">Сравнение учебных планов</Link>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	);
 }
 
 export default Nav;

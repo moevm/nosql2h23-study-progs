@@ -7,6 +7,12 @@ export class DocumentsAPIs {
     }
 
     static async getAllEducationalPrograms() {
-
+        return axiosInstance.get('/EducationalProgram');
     }
+
+
+
+    // static async getAllEducationalPrograms() {
+
+    // }
 }
