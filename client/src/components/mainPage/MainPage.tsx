@@ -12,11 +12,12 @@ import EducationProgramList from "../educationProgramList/EducationProgramList";
 import TrainingPlanComparison from "../trainingPlanComparison/TrainingPlanComparison";
 import DisciplineProgramList from "../disciplineProgramList/DisciplineProgramList";
 import TrainingPlanList from "../TrainingPlanList/TrainingPlanList";
+import TrainingPlanComporisonResult from "../trainingPlanComporisonResult/TrainingPlanComporisonResult";
+
 
 const MainPage = () => {
 	const { setAuthed } = useAuth();
 	const navigate = useNavigate();
-
 	const handleLogout = () => {
 		setAuthed(false);
 		navigate("/");
@@ -37,6 +38,8 @@ const MainPage = () => {
 					<Route path="/training-plan-comparison" element={<TrainingPlanComparison />} />
 					<Route path="/discipline-programs-list" element={<DisciplineProgramList />} />
 					<Route path="/training-plan-list" element={<TrainingPlanList />} />
+					<Route path="/training-plan-comparison-result" element={<TrainingPlanComporisonResult />} />
+				
 				</Routes>
 			</div>
 		</div>

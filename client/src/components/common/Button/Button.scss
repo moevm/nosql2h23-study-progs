@@ -1,0 +1,7 @@
+@use '../../../styles/mixins' as m;
+@use '../../../styles/colors' as c;
+
+.button {
+    @include m.button-style;
+    background-color: c.$main-color;
+}
