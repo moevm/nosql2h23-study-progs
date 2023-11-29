@@ -1,27 +1,22 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import TrainingPlanElement from "../trainingPlanElement/TrainingPlanElement";
 import Button from "../common/Button/Button";
+import { DocumentsAPIs } from "../../api/documents.api";
+import { ITrainingPlanListItem } from "../../interfaces/trainingPlanListItem.interface";
 
 const TrainingPlanComparison = () => {
-	const [data, setData] = useState([
-		{
-			id: 1,
-			name: "учебный план 1",
-		},
-		{
-			id: 2,
-			name: "учебный план 2",
-		},
-		{
-			id: 3,
-			name: "учебный план 3",
-		},
-		{
-			id: 4,
-			name: "учебный план 4",
-		},
-	]);
+	const [trainingPlanList, setTrainingPlanList] = useState<ITrainingPlanListItem[]>([]);
+
+	const updateTrainingPlanList = async () => {
+		const { data, status } = await DocumentsAPIs.getAllTrainingPlans();
+		setTrainingPlanList(data);
+	};
+
+
+	useEffect(() => {
+		updateTrainingPlanList();
+	}, []);
 
 	const navigate = useNavigate();
 
@@ -37,11 +32,22 @@ const TrainingPlanComparison = () => {
 		} else {
 			checkedTrainingPlans.current.splice(index, 1);
 		}
+
+		console.log(checkedTrainingPlans.current);
 	};
 
 	const onAnalyseClicked = () => {
 		console.log(checkedTrainingPlans.current)
-		navigate('/training-plan-comparison-result');	
+		if(checkedTrainingPlans.current.length === 2) {
+			navigate({
+				pathname: "/training-plan-comparison-result",
+				search: createSearchParams({
+					plan1: checkedTrainingPlans.current[0],
+					plan2: checkedTrainingPlans.current[1]
+				}).toString()
+			});	
+		}
+		
 	}
 
 	return (
@@ -53,8 +59,8 @@ const TrainingPlanComparison = () => {
 					</div>
 					<div className="TrainingPlanComparison__body">
 						<div className="list">
-							{data.map((plan) => (
-								<TrainingPlanElement key={plan.id} plan={plan} onChange={saveCheckedTrainingPlans} />
+							{trainingPlanList.map((plan) => (
+								<TrainingPlanElement key={plan.TrainingPlanName} plan={plan} onChange={saveCheckedTrainingPlans} />
 									
 							))}
 						</div>

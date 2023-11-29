@@ -1,6 +1,7 @@
 import { GridColDef, GridRowsProp, DataGrid } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import RadioButton from "../common/RadioButton/RadioButton";
+import { useSearchParams } from "react-router-dom";
 
 const TrainingPlanComporisonResult = () => {
 	const columns: GridColDef[] = [
@@ -9,9 +10,20 @@ const TrainingPlanComporisonResult = () => {
 		{ field: "plan2", headerName: "План 2", width: 150 },
 	];
 
+	let [searchParams, setSearchParams] = useSearchParams();
+
 	const [data, setData] = useState([
 
 	]);
+
+	useEffect(() => {
+		const plan1 = searchParams.get("plan1");
+		const plan2 = searchParams.get("plan2");
+		
+		
+	}, [])
+
+	
 
 	const rows: GridRowsProp = [
 		{

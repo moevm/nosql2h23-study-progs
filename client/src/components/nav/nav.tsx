@@ -11,9 +11,9 @@ const Nav = () => {
 					<li>
 						<Link to="/education-program-list">Образовательные программы</Link>
 					</li>
-					<li>
+					{/* <li>
 						<Link to="/discipline-programs-list">Учебные программы</Link>
-					</li>
+					</li> */}
 					<li>
 						<Link to="/training-plan-list">Учебные планы</Link>
 					</li>

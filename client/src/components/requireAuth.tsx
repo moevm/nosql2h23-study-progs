@@ -9,8 +9,6 @@ const RequireAuth = ({ children }: any) => {
     const { authed } = useAuth();
     const location = useLocation();
 
-    console.log(location)
-
     const redirectedPath = location.pathname === '/' ?  BASE_AUTHED_USER_URL : location.pathname;
 
     

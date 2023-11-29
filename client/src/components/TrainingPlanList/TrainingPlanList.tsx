@@ -4,6 +4,7 @@ import Search from "../search/Search";
 import EducationElementLink from "../educationElementLink/EducationElementLink";
 import Select from "../common/Select/Select";
 import { DocumentsAPIs } from "../../api/documents.api";
+import { ITrainingPlanListItem } from "../../interfaces/trainingPlanListItem.interface";
 
 interface IFilterParam {
 	filterParamName: string;
@@ -11,65 +12,44 @@ interface IFilterParam {
 }
 
 const TrainingPlanList = () => {
+	const [trainingPlanList, setTrainingPlanList] =
+		useState<ITrainingPlanListItem[]>();
 
-	const [data, setData] = useState([]);
+	const updateTrainingPlanList = async () => {
+		const { data, status } = await DocumentsAPIs.getAllTrainingPlans();
+		setTrainingPlanList(data);
+	};
 
-	const getTrainingPlanList = async () => {
-		return await DocumentsAPIs.getAllTrainingPlans();
-	}
-
-	const getCommonDis = async () => {
-		return await DocumentsAPIs.getCommonAndDifferentDisciplines('338-20', '308-23');
-	}
+	// const getCommonDis = async () => {
+	// 	return await DocumentsAPIs.getCommonAndDifferentDisciplines('338-20', '308-23');
+	// }
 
 	useEffect(() => {
-		getTrainingPlanList().then((res) => console.log(res.data));
-		getCommonDis().then((res) => console.log(res.data));
-	}, [])
-
-
-	/*const [data, setData] = useState([
-		{
-			id: 1,
-			name: "учебный план 1",
-		},
-		{
-			id: 2,
-			name: "учебный план 2",
-		},
-		{
-			id: 3,
-			name: "учебный план 3",
-		},
-		{
-			id: 4,
-			name: "учебный план 4",
-		},
-	]);*/
+		updateTrainingPlanList();
+	}, []);
 
 	const filterParams = useRef<IFilterParam[]>([]);
 
-	const handleFiltering = () => {
-
-	}
+	const handleFiltering = () => {};
 
 	const onSelectFilterParam = (paramName: string, paramValue: string) => {
-		const filterParam = filterParams.current.find((param) => param.filterParamName === paramName)
+		const filterParam = filterParams.current.find(
+			(param) => param.filterParamName === paramName
+		);
 
-		if(!!filterParam) {
-			filterParam.filterParamValue = paramValue
+		if (!!filterParam) {
+			filterParam.filterParamValue = paramValue;
 		} else {
-
 			const newFilterParam: IFilterParam = {
 				filterParamName: paramName,
-				filterParamValue: paramValue
-			}
+				filterParamValue: paramValue,
+			};
 
-			filterParams.current.push(newFilterParam)
+			filterParams.current.push(newFilterParam);
 		}
 
 		console.log(filterParams.current);
-	}
+	};
 
 	return (
 		<div className="TrainingPlanList">
@@ -84,17 +64,24 @@ const TrainingPlanList = () => {
 					<div className="TrainingPlanList__body">
 						<Search buttons={<button>filter</button>} />
 						<div className="filteringParams">
-							<Select label="направление подготовки" onChange={onSelectFilterParam} options={["1", "2", "3"]} />
+							<Select
+								label="направление подготовки"
+								onChange={onSelectFilterParam}
+								options={["1", "2", "3"]}
+							/>
 						</div>
-						<div className="list">
-							{/*data.map((plan) => (
+						<div className="list"> 
+						{
+							trainingPlanList?.map((plan) => (
 								<EducationElementLink
-									key={plan.id}
-									to={`training-plan-list/${plan.id}`}
+									key={plan.TrainingPlanName}
+									to={`training-plan-list/${plan.TrainingPlanName}`}
 								>
-									{plan.name}
+									{plan.TrainingPlanName}
 								</EducationElementLink>
-							))*/}
+							))
+						}
+							
 						</div>
 					</div>
 				</div>
