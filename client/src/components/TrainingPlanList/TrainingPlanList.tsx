@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import Search from "../search/Search";
 import EducationElementLink from "../educationElementLink/EducationElementLink";
 import Select from "../common/Select/Select";
+import { DocumentsAPIs } from "../../api/documents.api";
 
 interface IFilterParam {
 	filterParamName: string;
@@ -10,6 +11,7 @@ interface IFilterParam {
 }
 
 const TrainingPlanList = () => {
+
 	const [data, setData] = useState([
 		{
 			id: 1,
