@@ -31,9 +31,10 @@ app.get('/EducationalPrograms', async (req, res) => {
 app.get('/trainingPlans', async (req, res) => {
     const session = db.session();
     try {
-        const result = await getResultByQuery('MATCH (n:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(m:EducationalProgram) RETURN m.name, n.name;')
-        const records = result.records.map(record => ({ 
+        const result = await getResultByQuery('MATCH (n:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(m:EducationalProgram) RETURN n.Id, m.name, n.name;')
+        const records = result.records.map(record => ({
             EducationalProgramName: record.get('m.name'),
+            TrainingPlanId: record.get('n.Id'),
             TrainingPlanName: record.get('n.name')
         }));
         res.status(200).json(records);
