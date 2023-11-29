@@ -1,4 +1,5 @@
 export interface ITrainingPlanListItem {
-    EducationalProgramName: string;
-    TrainingPlanName: string;
+    EducationalProgramName: string,
+    TrainingPlanId: string,
+    TrainingPlanName: string,
 }
