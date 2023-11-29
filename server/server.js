@@ -27,9 +27,20 @@ app.get('/EducationalProgram', async (req, res) => {
 })
 
 app.get('/trainingPlans', async (req, res) => {
-
-    res.json(await getResultByQuery('MATCH (n:Plan) RETURN n LIMIT 25;'));
-
+    const session = db.session();
+    try {
+        const result = await getResultByQuery('MATCH (n:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(m:EducationalProgram) RETURN m.name, n.name;')
+        const records = result.records.map(record => ({ 
+            EducationalProgramName: record.get('m.name'),
+            TrainingPlanName: record.get('n.name')
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+    //res.json(await getResultByQuery('MATCH (n:Plan) RETURN n LIMIT 25;'));
 })
 
 app.get('/api2', async (req, res) => {
