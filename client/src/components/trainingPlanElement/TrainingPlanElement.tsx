@@ -7,13 +7,13 @@ const TrainingPlanElement = ({
 	onChange,
 }: {
 	plan: ITrainingPlanListItem;
-	onChange: (planName: string) => void;
+	onChange: (planId: string) => void;
 }) => {
 	const [checked, setChecked] = useState(false);
 
 	const handleChangeEvent = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setChecked(e.target.checked);
-		onChange(plan.TrainingPlanName);
+		onChange(plan.TrainingPlanId);
 	};
 
 	return (
