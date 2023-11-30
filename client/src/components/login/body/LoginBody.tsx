@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react'
+import React, { FormEvent, useRef } from 'react'
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useEffect } from "react";
@@ -19,11 +19,21 @@ const LoginBody = () => {
         navigate(state?.path || '/catalog')
     };
 
+    const ref = useRef<any>({name: "", password: ""});
+
+    const onChangeHandler = (text: string, name: string) => {
+        ref.current[name] = text;
+    }
+
     useEffect(() => {
+
+
         if(authed) {
             navigate('/');
         }
     }, []);
+
+    
 
 
   return (
@@ -33,8 +43,8 @@ const LoginBody = () => {
                 <div className="login-form-block">
                     <div className="form-container">
                         <form className="login-form">
-                            <Input type="text" label_text="Логин" name="name" placeholder="Введите ваш логин" />
-                            <Input type="password" label_text="Пароль" name="password" placeholder="Введите ваш пароль" />
+                            <Input type="text" label_text="Логин" name="name" placeholder="Введите ваш логин" onChange={() => {}} />
+                            <Input type="password" label_text="Пароль" name="password" placeholder="Введите ваш пароль" onChange={() => {}} />
                             <button onClick={(e) => handleLogin(e)}>Войти</button>
                             <NavLink className="link" to="/signup">Регистрация</NavLink>
                         </form>

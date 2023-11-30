@@ -2,61 +2,57 @@ import { GridColDef, GridRowsProp, DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect } from "react";
 import RadioButton from "../common/RadioButton/RadioButton";
 import { useSearchParams } from "react-router-dom";
+import { ITrainingPlanComparison } from "../../interfaces/ITrainingPlanComparison.interface";
+import { DocumentsAPIs } from "../../api/documents.api";
 
 const TrainingPlanComporisonResult = () => {
-	const columns: GridColDef[] = [
-		{ field: "discipline", headerName: "Дисциплина", width: 150 },
-		{ field: "plan1", headerName: "План 1", width: 150 },
-		{ field: "plan2", headerName: "План 2", width: 150 },
-	];
-
 	let [searchParams, setSearchParams] = useSearchParams();
 
-	const [data, setData] = useState([
+	const [comparisonResult, setComparisonResult] = useState<
+		ITrainingPlanComparison[]
+	>([]);
 
-	]);
+	const plan1_id = searchParams.get("plan1") as string;
+	const plan2_id = searchParams.get("plan2") as string;
+
+	const updateComparisonResult = async () => {
+		const { data } = await DocumentsAPIs.getPlanComparison(
+			plan1_id,
+			plan2_id
+		);
+
+		setComparisonResult(data);
+	};
+
+	const createRowDataByParam = (param: string = "") => {
+		return comparisonResult.map((disciplineInfoOfTwoPlans) => {
+			return {
+				id: disciplineInfoOfTwoPlans.Discipline,
+				discipline: disciplineInfoOfTwoPlans.Discipline,
+				plan1: disciplineInfoOfTwoPlans.Plan1["TotalLaborHours"],
+				plan2: disciplineInfoOfTwoPlans.Plan2["TotalLaborHours"],
+			};
+		});
+	};
 
 	useEffect(() => {
-		const plan1 = searchParams.get("plan1");
-		const plan2 = searchParams.get("plan2");
-		
-		
-	}, [])
+		updateComparisonResult();
+	}, []);
 
-	
-
-	const rows: GridRowsProp = [
-		{
-			id: 1,
-			discipline: "Философия",
-			plan1: "34 часов",
-			plan2: "17 часов",
-		},
-		{
-			id: 3,
-			discipline: "Компьютерная графика",
-			plan1: "34 часов",
-			plan2: "17 часов",
-		},
-		{
-			id: 2,
-			discipline: "Математика",
-			plan1: "34 часов",
-			plan2: "17 часов",
-		},
+	const columns: GridColDef[] = [
+		{ field: "discipline", headerName: "Дисциплина", width: 150 },
+		{ field: "plan1", headerName: plan1_id, width: 150 },
+		{ field: "plan2", headerName: plan2_id, width: 150 },
 	];
 
-	const comparisonParamsNames = ["лекции", "практики", "кр"];
 
-	// const [selectedParam, setSelectedParam] = useState(comparisonParamsNames[0]);
+	// const comparisonParamsNames = ["лекции", "практики", "кр"];
 
-	const handleComparisonParamChange = () => {
-
-	}
+	const handleComparisonParamChange = () => {};
 
 	return (
 		<div className="TrainingPlanComporisonResult">
-			<div className="comparisonParams">
+			{/* <div className="comparisonParams">
 				{comparisonParamsNames.map((name) => (
 					<RadioButton
 						buttonName="comparisonParams"
@@ -65,9 +61,9 @@ const TrainingPlanComporisonResult = () => {
 						onChange={handleComparisonParamChange}
 					/>
 				))}
-			</div>
+			</div> */}
 			<div className="result">
-				<DataGrid rows={rows} columns={columns} />
+				<DataGrid rows={createRowDataByParam()} columns={columns} />
 			</div>
 		</div>
 	);

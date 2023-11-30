@@ -10,9 +10,9 @@ const EducationProgramList = () => {
 		useState<IEducationalProgramItem[]>();
 
 	const updateEducationalProgramList = async () => {
-		const { data, status } =
-			await DocumentsAPIs.getAllEducationalPrograms();
+		const { data, status } = await DocumentsAPIs.getAllEducationalPrograms();
 		setEducationalProgramList(data);
+		console.log(data);	
 	};
 
 	/*const getEducationalProgramStats = async () => {

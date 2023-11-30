@@ -60,7 +60,7 @@ const TrainingPlanComparison = () => {
 					<div className="TrainingPlanComparison__body">
 						<div className="list">
 							{trainingPlanList.map((plan) => (
-								<TrainingPlanElement key={plan.TrainingPlanName} plan={plan} onChange={saveCheckedTrainingPlans} />
+								<TrainingPlanElement key={plan.TrainingPlanId} plan={plan} onChange={saveCheckedTrainingPlans} />
 									
 							))}
 						</div>
