@@ -7,15 +7,12 @@ import { DocumentsAPIs } from "../../api/documents.api";
 import { ITrainingPlanListItem } from "../../interfaces/trainingPlanListItem.interface";
 import { ITrainingPlanStatItem } from "../../interfaces/ITrainingPlanStatItem.interface";
 import Button from "../common/Button/Button";
-
-interface IFilterParam {
-	filterParamName: string;
-	filterParamValue: string;
-}
+import FilterModal from "../filterModal/FilterModal";
+import { IFilterParam } from "../../interfaces/IFilterParam.interface";
 
 const TrainingPlanList = () => {
 	const [trainingPlanList, setTrainingPlanList] =
-		useState<ITrainingPlanStatItem[]>();
+		useState<ITrainingPlanStatItem[]>([]);
 
 	const [filteredData, setFilteredData] = useState<ITrainingPlanStatItem[]>();
 
@@ -23,59 +20,44 @@ const TrainingPlanList = () => {
 		const { data, status } = await DocumentsAPIs.getTrainingPlanStats();
 		setTrainingPlanList(data);
 		setFilteredData(data);
-		console.log(data)
+		console.log(data);
 	};
-
-
 
 	useEffect(() => {
 		updateTrainingPlanList();
 	}, []);
 
-	const filterParams = useRef<IFilterParam[]>([]);
 
-	const handleFiltering = () => {
-		console.log(filterParams.current);
+	const filterData = (
+		filterParams: IFilterParam[]
+	) => {
+		console.log(filterParams);
 
-		const result = trainingPlanList?.filter((trainingPlan: any) => {
-
-			return trainingPlan["Year"]?.toString() === filterParams.current[0].filterParamValue
+		const isTrainingPlanMatchFilterParams = (trainingPlan: ITrainingPlanStatItem, filterParams: IFilterParam[]): boolean => {
+			for(let i = 0; i < filterParams.length; i++) {
 			
-			
-			// const isCorrect = filterParams.current.reduce((acc, param) => {
+				type objectKey = keyof typeof trainingPlan;
 
-			// 	console.log(trainingPlan, param.filterParamName, param.filterParamValue)
-			// 	if(trainingPlan[param.filterParamName]?.toString() !== param.filterParamValue) {
-			// 		return acc && false;
-			// 	} 
-			// 	return acc && true;
-			// }, true);
-			// console.log(isCorrect);
+				const paramName = filterParams[i].filterParamName as objectKey;
+				const paramValue = filterParams[i].filterParamValue;
 
-			// return isCorrect;
-		})
+				if(trainingPlan[paramName] !== paramValue) {
+					return false;
+				}
+			}
 
-		setFilteredData(result);
-	};
-
-	const onSelectFilterParam = (paramName: string, paramValue: string) => {
-		const filterParam = filterParams.current.find(
-			(param) => param.filterParamName === paramName
-		);
-
-		if (!!filterParam) {
-			filterParam.filterParamValue = paramValue;
-		} else {
-			const newFilterParam: IFilterParam = {
-				filterParamName: paramName,
-				filterParamValue: paramValue,
-			};
-
-			filterParams.current.push(newFilterParam);
+			return true;
 		}
 
-		console.log(filterParams.current);
+		const result = trainingPlanList?.filter((trainingPlan: ITrainingPlanStatItem) => isTrainingPlanMatchFilterParams(trainingPlan, filterParams));
+
+		console.log(result);
+	
 	};
+
+	const resetData = () => {
+		setFilteredData([...trainingPlanList]);
+	}
 
 	return (
 		<div className="TrainingPlanList">
@@ -89,39 +71,16 @@ const TrainingPlanList = () => {
 					</div>
 					<div className="TrainingPlanList__body">
 						<Search buttons={<button>filter</button>} />
-						<div className="filteringParams">
-							{/* <Select
-								label="направление подготовки"
-								name="DirectionName"
-								onChange={onSelectFilterParam}
-								options={["Прикладная математика и информатика", "Приборостроение", "Биотехнические системы и технологии"]}
-							/> */}
-							<Select
-								label="год"
-								name="Year"
-								onChange={onSelectFilterParam}
-								options={["2020", "2021", "2022", "2023"]}
-							/>
-							{/* <Select
-								label="Форма обучения"
-								name="FormOfStudy"
-								onChange={onSelectFilterParam}
-								options={["Очная", "Очно-заочная"]}
-							/> */}
-							<Button onClick={handleFiltering} text="применить" />
-						</div>
-						<div className="list"> 
-						{
-							filteredData?.map((plan) => (
+						<FilterModal onFilterSubmit={filterData} onFilterReset={resetData} />
+						<div className="list">
+							{filteredData?.map((plan) => (
 								<EducationElementLink
 									key={plan.TrainingPlanName}
 									to={`training-plan-list/${plan.TrainingPlanName}`}
 								>
 									{plan.TrainingPlanName}
 								</EducationElementLink>
-							))
-						}
-							
+							))}
 						</div>
 					</div>
 				</div>

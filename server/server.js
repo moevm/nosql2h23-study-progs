@@ -13,7 +13,6 @@ app.listen(4200)
 
 
 app.get('/EducationalPrograms', async (req, res) => {
-    const session = db.session();
     try {
         const result = await getResultByQuery('MATCH (n:EducationalProgram) RETURN n.name, n.latin_name;')
         const records = result.records.map(record => ({ 
@@ -23,13 +22,10 @@ app.get('/EducationalPrograms', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } finally {
-        await session.close();
     }
 })
 
 app.get('/trainingPlans', async (req, res) => {
-    const session = db.session();
     try {
         const result = await getResultByQuery('MATCH (n:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(m:EducationalProgram) RETURN n.Id, m.name, n.name;')
         const records = result.records.map(record => ({
@@ -40,15 +36,12 @@ app.get('/trainingPlans', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } finally {
-        await session.close();
     }
 })
 
 app.get('/TrainingPlansStats', async (req, res) => {
-    const session = db.session();
     try {
-        const result = await getResultByQuery('MATCH (plan:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(ed:EducationalProgram)<-[:PROFILE]-(dir:Direction) RETURN plan.Id ed.name, plan.name, plan.year, ed.form_of_study, dir.code, dir.name;')
+        const result = await getResultByQuery('MATCH (plan:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(ed:EducationalProgram)<-[:PROFILE]-(dir:Direction) RETURN plan.Id, ed.name, plan.name, plan.year, ed.form_of_study, dir.code, dir.name;')
         const records = result.records.map(record => ({ 
             TrainingPlanName: record.get('plan.name'),
             EducationalProgramName: record.get('ed.name'),
@@ -61,13 +54,10 @@ app.get('/TrainingPlansStats', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } finally {
-        await session.close();
     }
 })
 
 app.get('/EducationalProgramStats/:EdName', async (req, res) => {
-    const session = db.session();
     try {
         const result = await getResultByQuery(`MATCH (n:EducationalProgram {latin_name: "${req.params.EdName}"}) RETURN n.education_level, n.form_of_study, n.training_period;`)
         const records = result.records.map(record => ({ 
@@ -78,13 +68,10 @@ app.get('/EducationalProgramStats/:EdName', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } finally {
-        await session.close();
     }
 })
 
 app.get('/TrainingPlanComparison/:plan1/:plan2', async (req, res) => {
-    const session = db.session();
     try {
         const result = await getResultByQuery(`MATCH (n:TrainingPlan {Id: "${req.params.plan1}"})-[has1:HAS]->(dis:Discipline)<-[has2:HAS]-(m:TrainingPlan {Id: "${req.params.plan2}"}) RETURN dis.name, has1.total_labor_hours, has1.practice_hours, has1.lecture_hours, has1.laboratory_hours, has2.total_labor_hours, has2.practice_hours, has2.lecture_hours, has2.laboratory_hours;`)
         const records = result.records.map(record => ({ 
@@ -105,13 +92,10 @@ app.get('/TrainingPlanComparison/:plan1/:plan2', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
-    } finally {
-        await session.close();
     }
 })
 
 app.get('/CommonDisciplines/:plan1/:plan2', async (req, res) => {
-    const session = db.session();
     try {
         const result = await getResultByQuery(`MATCH (plan:TrainingPlan)-[:HAS]->(dis:Discipline)
         WHERE plan.Id = "${req.params.plan1}" OR plan.Id = "${req.params.plan2}"
