@@ -13,22 +13,18 @@ import TrainingPlanComparison from "../trainingPlanComparison/TrainingPlanCompar
 import DisciplineProgramList from "../disciplineProgramList/DisciplineProgramList";
 import TrainingPlanList from "../TrainingPlanList/TrainingPlanList";
 import TrainingPlanComporisonResult from "../trainingPlanComporisonResult/TrainingPlanComporisonResult";
+import ExportButton from "../exportButton/ExportButton";
+import LogoutButton from "../LogoutButton/LogoutButton";
 
 
 const MainPage = () => {
-	const { setAuthed } = useAuth();
-	const navigate = useNavigate();
-	const handleLogout = () => {
-		setAuthed(false);
-		navigate("/");
-	};
 
 	return (
 		<div>
 			<Menu>
 				<div className="menuButtons">
-					<button onClick={() => console.log("экспорт")}>Экспорт бд</button>
-					<button onClick={handleLogout}>Выйти</button>
+					<ExportButton />
+					<LogoutButton />
 				</div>
 			</Menu>
 			<Nav/>

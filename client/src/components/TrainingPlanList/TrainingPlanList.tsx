@@ -11,8 +11,9 @@ import FilterModal from "../filterModal/FilterModal";
 import { IFilterParam } from "../../interfaces/IFilterParam.interface";
 
 const TrainingPlanList = () => {
-	const [trainingPlanList, setTrainingPlanList] =
-		useState<ITrainingPlanStatItem[]>([]);
+	const [trainingPlanList, setTrainingPlanList] = useState<
+		ITrainingPlanStatItem[]
+	>([]);
 
 	const [filteredData, setFilteredData] = useState<ITrainingPlanStatItem[]>();
 
@@ -27,37 +28,37 @@ const TrainingPlanList = () => {
 		updateTrainingPlanList();
 	}, []);
 
+	const filterData = (filterParams: IFilterParam[]) => {
 
-	const filterData = (
-		filterParams: IFilterParam[]
-	) => {
-		console.log(filterParams);
-
-		const isTrainingPlanMatchFilterParams = (trainingPlan: ITrainingPlanStatItem, filterParams: IFilterParam[]): boolean => {
-			for(let i = 0; i < filterParams.length; i++) {
-			
+		const isTrainingPlanMatchFilterParams = (
+			trainingPlan: ITrainingPlanStatItem,
+			filterParams: IFilterParam[]
+		): boolean => {
+			for (let i = 0; i < filterParams.length; i++) {
 				type objectKey = keyof typeof trainingPlan;
 
 				const paramName = filterParams[i].filterParamName as objectKey;
 				const paramValue = filterParams[i].filterParamValue;
 
-				if(trainingPlan[paramName] !== paramValue) {
+				if (trainingPlan[paramName]?.toString() !== paramValue) {
 					return false;
 				}
 			}
 
 			return true;
-		}
+		};
 
-		const result = trainingPlanList?.filter((trainingPlan: ITrainingPlanStatItem) => isTrainingPlanMatchFilterParams(trainingPlan, filterParams));
+		const result = trainingPlanList?.filter(
+			(trainingPlan: ITrainingPlanStatItem) =>
+				isTrainingPlanMatchFilterParams(trainingPlan, filterParams)
+		);
 
-		console.log(result);
-	
+		setFilteredData(result);
 	};
 
 	const resetData = () => {
 		setFilteredData([...trainingPlanList]);
-	}
+	};
 
 	return (
 		<div className="TrainingPlanList">
@@ -71,14 +72,17 @@ const TrainingPlanList = () => {
 					</div>
 					<div className="TrainingPlanList__body">
 						<Search buttons={<button>filter</button>} />
-						<FilterModal onFilterSubmit={filterData} onFilterReset={resetData} />
+						<FilterModal
+							onFilterSubmit={filterData}
+							onFilterReset={resetData}
+						/>
 						<div className="list">
 							{filteredData?.map((plan) => (
 								<EducationElementLink
 									key={plan.TrainingPlanName}
 									to={`training-plan-list/${plan.TrainingPlanName}`}
 								>
-									{plan.TrainingPlanName}
+									{`${plan.TrainingPlanName} ${plan.FormOfStudy} ${plan.DirectionName} ${plan.Year}`}
 								</EducationElementLink>
 							))}
 						</div>

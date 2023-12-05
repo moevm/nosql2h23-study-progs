@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { IFilterParam } from "../../interfaces/IFilterParam.interface";
 import Select from "../common/Select/Select";
 import Button from "../common/Button/Button";
+import { DEFAULT_FILTERATION_VALUE } from "../../constants/UI";
 
 const FilterModal = ({
 	onFilterSubmit,
@@ -10,36 +11,58 @@ const FilterModal = ({
 	onFilterSubmit: (params: IFilterParam[]) => void;
 	onFilterReset: () => void;
 }) => {
-
-	useEffect(() => { console.log('rerender')})
+	useEffect(() => {
+		console.log("rerender");
+	});
 
 	const filterParams = useRef<IFilterParam[]>([]);
 
-	const onFilterParamsChange = (paramName: string, paramValue: string) => {
-		const filterParam = filterParams.current.find(
-			(param) => param.filterParamName === paramName
-		);
 
-		if (!!filterParam) {
-			filterParam.filterParamValue = paramValue;
-		} else {
-			const newFilterParam: IFilterParam = {
-				filterParamName: paramName,
-				filterParamValue: paramValue,
-			};
+	const getFilterParams = () => {
 
-			filterParams.current.push(newFilterParam);
+		filterParams.current = [];
+
+		for(let i = 0; i < selectRefs.current.length; i++) {
+			const currentSelectRef = selectRefs.current[i];
+
+			console.log(currentSelectRef.current?.value, currentSelectRef.current?.name);
+			if(currentSelectRef.current?.value !== "Выберите пункт") { 
+				const newFilterParam: IFilterParam = {
+					filterParamName: currentSelectRef.current?.name as string,
+					filterParamValue: currentSelectRef.current?.value as string,
+				};
+	
+				filterParams.current.push(newFilterParam);
+			}
 		}
 
-		console.log(filterParams.current);
-	};
+		return filterParams.current;
+	}
+
+	const resetFilter = () => {
+		filterParams.current = [];
+
+		selectRefs.current.forEach(ref => {
+			if(ref.current) {
+				ref.current.value = DEFAULT_FILTERATION_VALUE;
+			}
+		});
+
+		onFilterReset();
+	}
+
+	const directionNameSelectRef = useRef<HTMLSelectElement>(null);
+	const yearSelectRef = useRef<HTMLSelectElement>(null);
+	const formOfStudySelectRef = useRef<HTMLSelectElement>(null);
+
+	const selectRefs = useRef([directionNameSelectRef, yearSelectRef, formOfStudySelectRef]);
 
 	return (
 		<div className="FilterModal">
 			<Select
 				label="направление подготовки"
 				name="DirectionName"
-				onFiltering={onFilterParamsChange}
+				selectRef={directionNameSelectRef}
 				options={[
 					"Прикладная математика и информатика",
 					"Приборостроение",
@@ -49,17 +72,20 @@ const FilterModal = ({
 			<Select
 				label="год"
 				name="Year"
-				onFiltering={onFilterParamsChange}
+				selectRef={yearSelectRef}
 				options={["2020", "2021", "2022", "2023"]}
 			/>
 			<Select
 				label="Форма обучения"
 				name="FormOfStudy"
-				onFiltering={onFilterParamsChange}
+				selectRef={formOfStudySelectRef}
 				options={["Очная", "Очно-заочная"]}
 			/>
-			<Button onClick={() => onFilterSubmit(filterParams.current)} text="применить" />
-			<Button onClick={onFilterReset} text="применить" />
+			<Button
+				onClick={() => onFilterSubmit(getFilterParams())}
+				text="применить"
+			/>
+			<Button onClick={resetFilter} text="отменить" />
 		</div>
 	);
 };

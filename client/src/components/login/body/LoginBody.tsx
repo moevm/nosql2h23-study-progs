@@ -4,37 +4,53 @@ import { useAuth } from "../../../contexts/AuthContext";
 import { useEffect } from "react";
 import Input from '../../common/Input/Input';
 import './LoginBody.scss';
+import { AuthorizationAPIs } from '../../../api/auth.api';
 
 const LoginBody = () => {
 
     const navigate = useNavigate();
     const { state } = useLocation();
-    const { authed, setAuthed } = useAuth();
+    const { isAuthed, setId } = useAuth();
 
     
     const handleLogin = (e: any) => {
         e.preventDefault();
-        setAuthed(true);
-        console.log(state?.path)
-        navigate(state?.path || '/catalog')
+
+        const email = emailInput.current?.value as string;
+        const password = passwordInput.current?.value as string;
+
+        AuthorizationAPIs.getID(email, password)
+        .then((res) => {
+            if (res) {
+                if (
+                    res.status === 200 ||
+                    res.status === 204 ||
+                    res.status === 304
+                ) {
+                    window.localStorage.setItem('id', res.data);
+                    setId(res.data);
+                    navigate(state?.path || '/education-program-list')
+                }
+                
+            }
+
+        })
+        .catch((error) => {
+            console.log(error);
+        });
     };
 
-    const ref = useRef<any>({name: "", password: ""});
-
-    const onChangeHandler = (text: string, name: string) => {
-        ref.current[name] = text;
-    }
 
     useEffect(() => {
 
 
-        if(authed) {
+        if(isAuthed) {
             navigate('/');
         }
     }, []);
 
-    
-
+    const emailInput = useRef<HTMLInputElement>(null);
+    const passwordInput = useRef<HTMLInputElement>(null);
 
   return (
     <div className="loginBody">
@@ -43,8 +59,8 @@ const LoginBody = () => {
                 <div className="login-form-block">
                     <div className="form-container">
                         <form className="login-form">
-                            <Input type="text" label_text="Логин" name="name" placeholder="Введите ваш логин" onChange={() => {}} />
-                            <Input type="password" label_text="Пароль" name="password" placeholder="Введите ваш пароль" onChange={() => {}} />
+                            <Input type="text" label_text="Логин" name="name" placeholder="Введите ваш логин" inputRef={emailInput} />
+                            <Input type="password" label_text="Пароль" name="password" placeholder="Введите ваш пароль" inputRef={passwordInput} />
                             <button onClick={(e) => handleLogin(e)}>Войти</button>
                             <NavLink className="link" to="/signup">Регистрация</NavLink>
                         </form>
