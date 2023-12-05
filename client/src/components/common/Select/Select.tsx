@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
+import { DEFAULT_FILTERATION_VALUE } from "../../../constants/UI";
 
 const Select = ({
 	options,
 	name,
-	onChange,
+	selectRef,
 	label
 }: {
 	options: string[];
 	name: string;
-	onChange: (paramName: string, paramValue: string) => void;
+	selectRef: React.RefObject<HTMLSelectElement>;
 	label: string
 }) => {
 
 	return (
 		<div>
 			<div className="label">{label}</div>
-			<select className="select" onChange={(e) => onChange(name, e.target.value)}>
+			<select className="select" name={name} ref={selectRef}>
+				<option defaultValue="default">{DEFAULT_FILTERATION_VALUE}</option>
 				{options.map((option) => (
 					<option value={option} key={option}>{option}</option>
 				))}
