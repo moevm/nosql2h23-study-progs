@@ -25,7 +25,7 @@ export function useAuth() {
 
 export function AuthProvider({ children }: any) {
 	const [id, setId] = useState<string | undefined>(
-		window.localStorage.getItem("token") || undefined
+		window.localStorage.getItem("id") || undefined
 	);
 
 	const [isAuthenticated, setIsAuthenticated] = useState(!!id);

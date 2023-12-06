@@ -5,14 +5,18 @@ import Button from "../common/Button/Button";
 import { DocumentsAPIs } from "../../api/documents.api";
 import { ITrainingPlanListItem } from "../../interfaces/trainingPlanListItem.interface";
 
+
+const COUNT_PLANS_TO_COMPARE = 2;
+
 const TrainingPlanComparison = () => {
-	const [trainingPlanList, setTrainingPlanList] = useState<ITrainingPlanListItem[]>([]);
+	const [trainingPlanList, setTrainingPlanList] = useState<
+		ITrainingPlanListItem[]
+	>([]);
 
 	const updateTrainingPlanList = async () => {
 		const { data, status } = await DocumentsAPIs.getAllTrainingPlans();
 		setTrainingPlanList(data);
 	};
-
 
 	useEffect(() => {
 		updateTrainingPlanList();
@@ -22,7 +26,7 @@ const TrainingPlanComparison = () => {
 
 	const checkedTrainingPlans = useRef<string[]>([]);
 
-	const saveCheckedTrainingPlans = (value: string) => {
+	const updateCheckedTrainingPlans = (value: string) => {
 		const index = checkedTrainingPlans.current.findIndex(
 			(element) => element === value
 		);
@@ -36,19 +40,33 @@ const TrainingPlanComparison = () => {
 		console.log(checkedTrainingPlans.current);
 	};
 
-	const onAnalyseClicked = () => {
-		console.log(checkedTrainingPlans.current)
-		if(checkedTrainingPlans.current.length === 2) {
-			navigate({
-				pathname: "/training-plan-comparison-result",
-				search: createSearchParams({
-					plan1: checkedTrainingPlans.current[0],
-					plan2: checkedTrainingPlans.current[1]
-				}).toString()
-			});	
+	const isTrainingPlansChecksCountEnough = () =>
+		checkedTrainingPlans.current.length === COUNT_PLANS_TO_COMPARE;
+
+	const onTrainingPlanChecked = (trainingPlanId: string) => {
+
+		updateCheckedTrainingPlans(trainingPlanId);
+
+		if (isTrainingPlansChecksCountEnough()) {
+			analyseButtonApiRef.current.enable();
+		} else {
+			analyseButtonApiRef.current.disable();
 		}
-		
-	}
+	};
+
+	const onAnalyseClicked = () => {
+		console.log(checkedTrainingPlans.current);
+
+		navigate({
+			pathname: "/training-plan-comparison-result",
+			search: createSearchParams({
+				plan1: checkedTrainingPlans.current[0],
+				plan2: checkedTrainingPlans.current[1],
+			}).toString(),
+		});
+	};
+
+	const analyseButtonApiRef = useRef<any>(null);
 
 	return (
 		<div className="TrainingPlanComparison">
@@ -60,11 +78,19 @@ const TrainingPlanComparison = () => {
 					<div className="TrainingPlanComparison__body">
 						<div className="list">
 							{trainingPlanList.map((plan) => (
-								<TrainingPlanElement key={plan.TrainingPlanId} plan={plan} onChange={saveCheckedTrainingPlans} />
-									
+								<TrainingPlanElement
+									key={plan.TrainingPlanId}
+									plan={plan}
+									onChange={onTrainingPlanChecked}
+								/>
 							))}
 						</div>
-						<Button text="Анализ" onClick={onAnalyseClicked} />
+						<Button
+							text="Анализ"
+							onClick={onAnalyseClicked}
+							apiRef={analyseButtonApiRef}
+							isDisabled={true}
+						/>
 					</div>
 				</div>
 			</div>
