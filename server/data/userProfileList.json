@@ -1,0 +1,32 @@
+[
+    {
+        "id": "1",
+        "name": "Vladislav",
+        "role": "student"
+    },
+    {
+        "id": "2",
+        "name": "Karina",
+        "role": "student"
+    },
+    {
+        "id": "3",
+        "name": "Valeria",
+        "role": "student"
+    },
+    {
+        "id": "4",
+        "name": "Vasili",
+        "role": "teacher"
+    },
+    {
+        "id": "5",
+        "name": "Ivan",
+        "role": "student"
+    },
+    {
+        "id": "6",
+        "name": "Andrew",
+        "role": "teacher"
+    }
+]
