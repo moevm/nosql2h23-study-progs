@@ -3,12 +3,15 @@
 .search {
 
     display: flex;
+    position: relative;
 
     input {
         outline: none;
         border: 1px solid #9C9898;
         padding: 15px;
+        padding-left: 30px;
         color: c.$main-color;
+        transition: all .1s;
     }
 
     .searchButton {
@@ -19,6 +22,22 @@
 
         &:hover {
             background-color: lighten($color: c.$main-color, $amount: 10);
+        }
+    }
+
+    .removeTextButton {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        left: 10px;
+        top: calc(50% - 7px);
+        cursor: pointer;
+
+        &.invisible {
+            display: none;
         }
     }
 }

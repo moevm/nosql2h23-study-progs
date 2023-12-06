@@ -33,7 +33,7 @@ const EducationProgramList = () => {
 						<NavLink to="/edit">редактировать</NavLink>
 					</div>
 					<div className="educationProgramList__body">
-						<Search buttons={<button>filter</button>} />
+						{/* <Search buttons={<button>filter</button>} /> */}
 						<div className="list">
 							{educationalProgramList?.map((program) => (
 								<EducationElementLink

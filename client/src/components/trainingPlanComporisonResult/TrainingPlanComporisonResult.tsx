@@ -7,8 +7,6 @@ import "./TrainingPlanComporisonResult.scss";
 import ComparisonParamsModal from "../comparisonParamsModal/ComparisonParamsModal";
 import { INITIAL_COMPARISON_PARAM } from "../../constants/UI";
 
-const MemoComparisonParamsModal = React.memo(ComparisonParamsModal);
-
 const TrainingPlanComporisonResult = () => {
 	let [searchParams, setSearchParams] = useSearchParams();
 

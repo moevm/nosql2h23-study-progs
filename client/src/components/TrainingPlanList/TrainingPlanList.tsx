@@ -17,6 +17,8 @@ const TrainingPlanList = () => {
 
 	const [filteredData, setFilteredData] = useState<ITrainingPlanStatItem[]>();
 
+	const [searchedData, setSearchedData] = useState<ITrainingPlanStatItem[]>();
+
 	const updateTrainingPlanList = async () => {
 		const { data, status } = await DocumentsAPIs.getTrainingPlanStats();
 		setTrainingPlanList(data);
@@ -28,8 +30,19 @@ const TrainingPlanList = () => {
 		updateTrainingPlanList();
 	}, []);
 
-	const filterData = (filterParams: IFilterParam[]) => {
+	const searchTrainingPlans = (valueToSearch: string) => {
+		const result = trainingPlanList.filter((trainingPlan) => {
+			return (
+				trainingPlan.TrainingPlanName.toLowerCase().indexOf(
+					valueToSearch.toLowerCase()
+				) !== -1
+			);
+		});
 
+		return result;
+	};
+
+	const filterData = (filterParams: IFilterParam[]) => {
 		const isTrainingPlanMatchFilterParams = (
 			trainingPlan: ITrainingPlanStatItem,
 			filterParams: IFilterParam[]
@@ -71,7 +84,7 @@ const TrainingPlanList = () => {
 						</NavLink>
 					</div>
 					<div className="TrainingPlanList__body">
-						<Search buttons={<button>filter</button>} />
+						<Search onSearchPerform={searchTrainingPlans} />
 						<FilterModal
 							onFilterSubmit={filterData}
 							onFilterReset={resetData}

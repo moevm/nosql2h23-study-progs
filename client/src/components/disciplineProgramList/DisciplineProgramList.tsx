@@ -37,7 +37,7 @@ const DisciplineProgramList = () => {
 						</NavLink>
 					</div>
 					<div className="DisciplineProgramList__body">
-						<Search buttons={<button>filter</button>} />
+						{/* <Search /> */}
 						<div className="list">
 							{data.map((program) => (
 								<EducationElementLink
