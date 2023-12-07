@@ -8,6 +8,7 @@ const Search = ({ onSearchPerform }: { onSearchPerform: (value: string) => void 
 
 	const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setValue(e.target.value);
+		onSearchPerform(e.target.value);
 	};
 
 	const resetSearchInput = () => {
