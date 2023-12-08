@@ -1,27 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Search from "../search/Search";
-import EducationElementLink from "../educationElementLink/EducationElementLink";
+import ElementLink from "../ElementLink/ElementLink";
 import { DocumentsAPIs } from "../../api/documents.api";
 import { IEducationalProgramItem } from "../../interfaces/educationalProgramItem.interface";
 
+const MemoElementLink = React.memo(ElementLink);
+
 const EducationProgramList = () => {
 	const [educationalProgramList, setEducationalProgramList] =
-		useState<IEducationalProgramItem[]>();
+		useState<IEducationalProgramItem[]>([]);
+
+	const [programsThatMatchSearchQuery, setProgramsThatMatchSearchQuery] = useState<IEducationalProgramItem[]>([]);
 
 	const updateEducationalProgramList = async () => {
-		const { data, status } = await DocumentsAPIs.getAllEducationalPrograms();
+		const { data } = await DocumentsAPIs.getAllEducationalPrograms();
 		setEducationalProgramList(data);
+		setProgramsThatMatchSearchQuery(data);
 		console.log(data);	
 	};
 
-	/*const getEducationalProgramStats = async () => {
-		return await DocumentsAPIs.getEducationalProgramStats("math_support_for_software_and_information_systems");
-	}*/
+	const searchPrograms = (valueToSearch: string) => {
+		const result = educationalProgramList.filter((program) => {
+			return (
+				program.Name.toLowerCase().indexOf(
+					valueToSearch.toLowerCase()
+				) !== -1
+			);
+		});
+
+		setProgramsThatMatchSearchQuery(result);
+	}
+
 
 	useEffect(() => {
 		updateEducationalProgramList();
-		//getEducationalProgramStats().then((res) => console.log(res.data));
 	}, []);
 
 	return (
@@ -33,15 +46,15 @@ const EducationProgramList = () => {
 						<NavLink to="/edit">редактировать</NavLink>
 					</div>
 					<div className="educationProgramList__body">
-						<Search buttons={<button>filter</button>} />
+						<Search onSearchPerform={(query) => searchPrograms(query)} />
 						<div className="list">
-							{educationalProgramList?.map((program) => (
-								<EducationElementLink
+							{programsThatMatchSearchQuery.map((program) => (
+								<MemoElementLink
 									key={program.LatinName}
 									to={`education-program-list/${program.LatinName}`}
 								>
 									{program.Name}
-								</EducationElementLink>
+								</MemoElementLink>
 							))}
 						</div>
 					</div>

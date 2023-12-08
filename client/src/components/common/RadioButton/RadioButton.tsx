@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from "react";
 
-const RadioButton = (params: { label: string, buttonName: string, onChange: () => void }) => {
-    
-    const { label, buttonName, onChange } = params;
-  
-    return (
-    <div>
-        <input type="radio" name={buttonName} onChange={onChange} />
-        <div className="label">{label}</div>
-    </div>
-  )
-}
+const RadioButton = (params: {
+	label: string;
+	buttonName: string;
+	value: string;
+	isChecked: boolean;
+	onChange: (value: string) => void;
+}) => {
 
-export default RadioButton
+	const { label, buttonName, onChange, value, isChecked } = params;
+
+	return (
+		<div>
+			<input
+				type="radio"
+				checked={isChecked}
+				name={buttonName}
+				onChange={() => onChange(value)}
+				value={value}
+			/>
+			<div className="label">{label}</div>
+		</div>
+	);
+};
+
+export default RadioButton;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Search from "../search/Search";
-import EducationElementLink from "../educationElementLink/EducationElementLink";
+import EducationElementLink from "../ElementLink/ElementLink";
 
 const DisciplineProgramList = () => {
 	const [data, setData] = useState([
@@ -37,7 +37,7 @@ const DisciplineProgramList = () => {
 						</NavLink>
 					</div>
 					<div className="DisciplineProgramList__body">
-						<Search buttons={<button>filter</button>} />
+						{/* <Search /> */}
 						<div className="list">
 							{data.map((program) => (
 								<EducationElementLink

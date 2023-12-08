@@ -4,4 +4,10 @@
 .button {
     @include m.button-style;
     background-color: c.$main-color;
+
+    &:disabled {
+        background-color: c.$border-color;
+        border: none;
+        cursor: default;
+    }
 }
