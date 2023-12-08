@@ -154,31 +154,18 @@ app.put('/ChangeEducationalProgram/:ed_name', async (req, res) => {
         await session.close();
     }
 })
-/*
-app.post('/CreateEducationalProgram/:ed_name', async (req, res) => {
+
+app.post('/CreateEducationalProgram', async (req, res) => {
     let body = req.body;
+    console.log(body);
     const session = db.session({ 
         database: "neo4j",
         defaultAccessMode: neo4j.session.WRITE 
     });
     try {
-        let queryString = ""
-        if(body.EducationLevel){
-            queryString += `n.education_level = "${body.EducationLevel}", `
+        if(body.Name !== "" && body.LatinName !== "" && body.EducationLevel !== "" && body.FormOfStudy !== "" && body.TrainingPeriod){
+            await session.run(`MERGE (n:EducationalProgram {name: "${body.Name}", latin_name: "${body.LatinName}", education_level: "${body.EducationLevel}", training_period: "${body.TrainingPeriod}", form_of_study: "${body.FormOfStudy}"})`)
         }
-        if(body.FormOfStudy){
-            queryString += `n.form_of_study = "${body.FormOfStudy}", `
-        }
-        if(body.TrainingPeriod){
-            queryString += `n.training_period = "${body.TrainingPeriod}"`
-        }
-        if (queryString.slice(-2) === ", ") {
-            queryString = queryString.slice(0, -2);
-          }
-
-        if(queryString !== "")
-            await session.run(`MATCH (n:EducationalProgram {latin_name: "${req.params.ed_name}"}) SET ${queryString}`)
-        
         res.status(200).json({ message: "OK" });
     }
     catch (error) {
@@ -186,7 +173,7 @@ app.post('/CreateEducationalProgram/:ed_name', async (req, res) => {
     } finally {
         await session.close();
     }
-})*/
+})
 
 app.get('/api2', async (req, res) => {
     const session = db.session({

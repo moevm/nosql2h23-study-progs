@@ -37,4 +37,8 @@ export class DocumentsAPIs {
         return axiosInstance.put(`/ChangeEducationalProgram/${ProgramName}`, stats);
     }
 
+    static async createEducationalProgram(info: Object) {
+        return axiosInstance.post(`/CreateEducationalProgram`, info);
+    }
+
 }
