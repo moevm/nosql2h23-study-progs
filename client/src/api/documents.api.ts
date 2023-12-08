@@ -41,4 +41,8 @@ export class DocumentsAPIs {
         return axiosInstance.post(`/CreateEducationalProgram`, info);
     }
 
+    static async createTrainingPlan(info: Object) {
+        return axiosInstance.post(`/CreateTrainingPlan`, info);
+    }
+
 }
