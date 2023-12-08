@@ -32,7 +32,9 @@ export class DocumentsAPIs {
     static async getCommonAndDifferentDisciplines(plan1: string, plan2: string): Promise<AxiosResponse<ICommonDisciplines[]>> {
         return axiosInstance.get(`/CommonDisciplines/${plan1}/${plan2}`);
     }
-    // static async getAllEducationalPrograms() {
 
-    // }
+    static async changeEducationalProgram(ProgramName: string, stats: IEducationalProgramStat) {
+        return axiosInstance.put(`/ChangeEducationalProgram/${ProgramName}`, stats);
+    }
+
 }
