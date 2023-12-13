@@ -32,6 +32,19 @@ app.get('/EducationalPrograms', async (req, res) => {
     }
 })
 
+//Disciplines
+app.get('/Disciplines', async (req, res) => {
+    try {
+        const result = await getResultByQuery('MATCH (n:Discipline) RETURN n.name;')
+        const records = result.records.map(record => ({ 
+            Name: record.get('n.name'),
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
 app.get('/trainingPlans', async (req, res) => {
     try {
         const result = await getResultByQuery('MATCH (n:TrainingPlan)<-[:IS_IMPLEMENTED_IN]-(m:EducationalProgram) RETURN n.Id, m.name, n.name;')
@@ -176,15 +189,23 @@ app.post('/CreateEducationalProgram', async (req, res) => {
 
 app.post('/CreateTrainingPlan', async (req, res) => {
     let body = req.body;
+    
     const session = db.session({ 
         database: "neo4j",
         defaultAccessMode: neo4j.session.WRITE 
     });
     try {
         if(body.Id !== "" && body.PlanName !== "" && body.EducationalProgramName !== "" && body.Year !== ""){
-            await session.run(`MATCH (m:EducationalProgram {latin_name: "${body.EducationalProgramName}"}) MERGE (n:TrainingPlan {Id: "${body.Id}", name: "${body.PlanName}", year: ${body.Year}})<-[:IS_IMPLEMENTED_IN]-(m)`)
-            for (let i = 0; i < body.Disciplines.length; i++){
-                await session.run(`MATCH (plan:TrainingPlan {Id: "${body.Id}"}), (dis:Discipline {name: "${body.Disciplines[i].Discipline}"}) MERGE (plan)-[:HAS {total_labor_hours: ${body.Disciplines[i].TotalLaborHours}, practice_hours: ${body.Disciplines[i].PracticeHours}, laboratory_hours: ${body.Disciplines[i].LaboratoryHours}, lecture_hours: ${body.Disciplines[i].LectureHours}}]->(dis)`)
+            await session.run(`MATCH (m:EducationalProgram {name: "${body.EducationalProgramName}"}) MERGE (n:TrainingPlan {Id: "${body.Id}", name: "${body.PlanName}", year: ${body.Year}})<-[:IS_IMPLEMENTED_IN]-(m)`)
+            if (body.Disciplines[0].Discipline){
+                for (let i = 0; i < body.Disciplines.length; i++){
+                    await session.run(`MATCH (plan:TrainingPlan {Id: "${body.Id}"}), (dis:Discipline {name: "${body.Disciplines[i].Discipline}"}) MERGE (plan)-[:HAS {total_labor_hours: ${body.Disciplines[i].TotalLaborHours}, practice_hours: ${body.Disciplines[i].PracticeHours}, laboratory_hours: ${body.Disciplines[i].LaboratoryHours}, lecture_hours: ${body.Disciplines[i].LectureHours}}]->(dis)`)
+                }
+            }
+            else {
+                for (let i = 0; i < body.Disciplines.length; i++){
+                    await session.run(`MATCH (plan:TrainingPlan {Id: "${body.Id}"}), (dis:Discipline {name: "${body.Disciplines[i].Discipline}"}) MERGE (plan)-[:HAS]->(dis)`)
+                }
             }
         }
         res.status(200).json({ message: "OK" });

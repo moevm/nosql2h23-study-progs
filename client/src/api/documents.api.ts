@@ -6,6 +6,7 @@ import { ITrainingPlanStatItem } from "../interfaces/ITrainingPlanStatItem.inter
 import { IEducationalProgramStat } from "../interfaces/EducationalProgramStat.interface";
 import { ITrainingPlanComparison } from "../interfaces/ITrainingPlanComparison.interface";
 import { ICommonDisciplines } from "../interfaces/ICommonDisciplines.interface";
+import { IDisciplineInTrainingPlan } from "../interfaces/IDisciplineInTrainingPlan.interface";
 
 export class DocumentsAPIs {
 
@@ -19,6 +20,10 @@ export class DocumentsAPIs {
 
     static async getAllEducationalPrograms(): Promise<AxiosResponse<IEducationalProgramItem[]>> {
         return axiosInstance.get('/EducationalPrograms');
+    }
+
+    static async getAllDisciplines() {
+        return axiosInstance.get('/Disciplines');
     }
 
     static async getEducationalProgramStats(EdName: string): Promise<AxiosResponse<IEducationalProgramStat[]>> {
