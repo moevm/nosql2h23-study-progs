@@ -12,7 +12,7 @@ const EducationProgramList = () => {
 	const updateEducationalProgramList = async () => {
 		const { data, status } = await DocumentsAPIs.getAllEducationalPrograms();
 		setEducationalProgramList(data);
-		console.log(data);	
+		//console.log(data);	
 	};
 
 	/*const getEducationalProgramStats = async () => {
@@ -30,7 +30,8 @@ const EducationProgramList = () => {
 				<div className="content">
 					<div className="educationProgramList__header">
 						<h2>Список образовательных программ</h2>
-						<NavLink to="/edit">редактировать</NavLink>
+						<NavLink to="/edit">редактировать</NavLink><br></br>
+						<NavLink to="/addED">добавить</NavLink>
 					</div>
 					<div className="educationProgramList__body">
 						<Search buttons={<button>filter</button>} />
