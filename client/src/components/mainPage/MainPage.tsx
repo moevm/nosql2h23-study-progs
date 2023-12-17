@@ -15,6 +15,8 @@ import TrainingPlanList from "../TrainingPlanList/TrainingPlanList";
 import TrainingPlanComporisonResult from "../trainingPlanComporisonResult/TrainingPlanComporisonResult";
 import ExportButton from "../exportButton/ExportButton";
 import LogoutButton from "../LogoutButton/LogoutButton";
+import AddEducationalProgram from "../addEducationalProgram/addEducationalProgram";
+import AddTrainingPlan from "../addTrainingPlan/addTrainingPlan"
 
 
 const MainPage = () => {
@@ -35,7 +37,9 @@ const MainPage = () => {
 					<Route path="/discipline-programs-list" element={<DisciplineProgramList />} />
 					<Route path="/training-plan-list" element={<TrainingPlanList />} />
 					<Route path="/training-plan-comparison-result" element={<TrainingPlanComporisonResult />} />
-				
+					<Route path="/addED" element={<AddEducationalProgram />} />
+					<Route path="/addTrainingPlan" element={<AddTrainingPlan />} />
+					
 				</Routes>
 			</div>
 		</div>
