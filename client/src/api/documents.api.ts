@@ -9,6 +9,10 @@ import { ICommonDisciplines } from "../interfaces/ICommonDisciplines.interface";
 
 export class DocumentsAPIs {
 
+    static async getGraphData(): Promise<AxiosResponse<any>> {
+        return axiosInstance.get('/GraphData');
+    }
+
     static async getAllTrainingPlans(): Promise<AxiosResponse<ITrainingPlanListItem[]>> {
         return axiosInstance.get('/trainingPlans');
     }
