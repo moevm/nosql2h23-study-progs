@@ -6,36 +6,12 @@ import ForceGraph from "react-force-graph-3d";
 import {json} from "stream/consumers";
 
 const GraphVisualization = () => {
-
-    let graphData = {
-        nodes: [{
-            id: "Alice"
-        },
-            {
-                id: "Bob"
-            },
-            {
-                id: "George"
-            }
-        ],
-        links: [{
-            source: "Alice",
-            target: "George"
-        },
-            {
-                source: "George",
-                target: "Bob"
-            }
-        ]
-    };
-
     const[graph, setGraph] = useState({nodes: [], links: []});
 
      const getGraphData = async () => {
        const gData = await DocumentsAPIs.getGraphData();
        let data = await gData.data;
-       console.log(data)
-         setGraph(data);
+       setGraph(data);
      };
 
      useEffect(() => {
@@ -46,7 +22,9 @@ const GraphVisualization = () => {
         <div className="graphVisualization">
             <ForceGraph3D
                 graphData={graph}
-                nodeAutoColorBy="group"
+                nodeAutoColorBy="label"
+                nodeLabel="caption"
+                nodeThreeObjectExtend={true}
                 linkDirectionalArrowLength={3.5}
                 linkDirectionalArrowRelPos={1}/>
         </div>

@@ -123,13 +123,17 @@ app.get('/GraphData', async (req, res) => {
         defaultAccessMode: neo4j.session.READ
     })
     session
-        .run('MATCH (n)-[r]->(m) RETURN id(n) as source, id(m) as target')
+        .run('MATCH (n)-->(m) RETURN { id: id(n), label:head(labels(n)), caption:n.name } as source, { id: id(m), label:head(labels(m)), caption:m.name } as target')
         .then(function (result) {
-            const links = result.records.map(r => { return {source:r.get('source').toNumber(), target:r.get('target').toNumber()}});
-            session.close();
-            const ids = new Set()
-            links.forEach(l => {ids.add(l.source);ids.add(l.target);});
-            const gData = { nodes: Array.from(ids).map(id => {return {id}}), links: links}
+            const nodes = {}
+            const links = result.records.map(r => {
+                let source = r.get('source');source.id = source.id.toNumber();
+                nodes[source.id] = source;
+                let target = r.get('target');target.id = target.id.toNumber();
+                nodes[target.id] = target;
+                return {source:source.id,target:target.id}
+            })
+            const gData = { nodes: Object.values(nodes), links: links}
             res.json(gData)
         })
         .catch(function (error) {
