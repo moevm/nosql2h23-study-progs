@@ -241,6 +241,11 @@ app.get('/GraphData', async (req, res) => {
         });
 })
 
+app.get('/ExportGraph', async (req, res) => {
+    const result = await getResultByQuery('CALL apoc.export.json.all(null,{useTypes:true, stream: true, jsonFormat: \'JSON\'}) YIELD data RETURN data');
+    res.json(result.records);
+});
+
 app.get('/api2', async (req, res) => {
     const session = db.session({
         database: "neo4j",
