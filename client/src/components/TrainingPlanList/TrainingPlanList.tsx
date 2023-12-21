@@ -84,7 +84,8 @@ const TrainingPlanList = () => {
 						<h2>Список образовательных программ</h2>
 						<NavLink to="/training-plan-list/edit">
 							редактировать
-						</NavLink>
+						</NavLink><br></br>
+						<NavLink to="/addTrainingPlan">добавить</NavLink>
 					</div>
 					<div className="TrainingPlanList__body">
 						<Search onSearchPerform={(value) => setSearchedQuery(value)} />

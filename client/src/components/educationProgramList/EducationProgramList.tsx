@@ -43,7 +43,8 @@ const EducationProgramList = () => {
 				<div className="content">
 					<div className="educationProgramList__header">
 						<h2>Список образовательных программ</h2>
-						<NavLink to="/edit">редактировать</NavLink>
+						<NavLink to="/edit">редактировать</NavLink><br></br>
+						<NavLink to="/addED">добавить</NavLink>
 					</div>
 					<div className="educationProgramList__body">
 						<Search onSearchPerform={(query) => searchPrograms(query)} />

@@ -4,13 +4,12 @@ import IUserProfile from "../interfaces/IUserProfile.interface";
 
 export class AuthorizationAPIs {
 
-    static async getID(
-        email: string,
-        password: string
-    ): Promise<{ data: string; status: number } | undefined> {
+    static async getID(email: string, password: string): Promise<{ data: string; status: number } | undefined> {
 
-        return { data: "id", status: 200 };
-        return await axiosInstance.post(`/auth/login`, {
+        //return { data: "id", status: 200 };
+        return axiosInstance.get(`/getUserId?email=${email}&password=${password}`);
+        
+        /*return await axiosInstance.post(`/auth/login`, {
             email,
             password,
         })
@@ -26,7 +25,7 @@ export class AuthorizationAPIs {
                 } else {
                     throw new Error();
                 }
-            });
+            });*/
     }
 
     static async getProfile(): Promise<{

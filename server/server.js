@@ -6,7 +6,14 @@ import cors from 'cors';
 const app = express()
 const db = neo4j.driver("neo4j+s://c6436e2d.databases.neo4j.io", neo4j.auth.basic('neo4j', 'rFEUHES8XeDv6A-fDZtXIFO4hbMdwauqbGkpfLq8UJg'))
 
+import login_list_json from "./data/loginInfoList.json" assert { type: "json" };
+const login_list = login_list_json.loginList;
 
+/*const urlencodedParser = express.urlencoded({
+    extended: false,
+});*/
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
 app.listen(4200)
@@ -18,6 +25,19 @@ app.get('/EducationalPrograms', async (req, res) => {
         const records = result.records.map(record => ({ 
             Name: record.get('n.name'),
             LatinName: record.get('n.latin_name')
+        }));
+        res.status(200).json(records);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
+
+//Disciplines
+app.get('/Disciplines', async (req, res) => {
+    try {
+        const result = await getResultByQuery('MATCH (n:Discipline) RETURN n.name;')
+        const records = result.records.map(record => ({ 
+            Name: record.get('n.name'),
         }));
         res.status(200).json(records);
     } catch (error) {
@@ -112,6 +132,86 @@ app.get('/CommonDisciplines/:plan1/:plan2', async (req, res) => {
         res.status(200).json(records);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+})
+
+app.put('/ChangeEducationalProgram/:ed_name', async (req, res) => {
+    let body = req.body;
+    const session = db.session({ 
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.WRITE 
+    });
+    try {
+        let queryString = ""
+        if(body.EducationLevel){
+            queryString += `n.education_level = "${body.EducationLevel}", `
+        }
+        if(body.FormOfStudy){
+            queryString += `n.form_of_study = "${body.FormOfStudy}", `
+        }
+        if(body.TrainingPeriod){
+            queryString += `n.training_period = "${body.TrainingPeriod}"`
+        }
+        if (queryString.slice(-2) === ", ") {
+            queryString = queryString.slice(0, -2);
+          }
+
+        if(queryString !== "")
+            await session.run(`MATCH (n:EducationalProgram {latin_name: "${req.params.ed_name}"}) SET ${queryString}`)
+        
+        res.status(200).json({ message: "OK" });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+})
+
+app.post('/CreateEducationalProgram', async (req, res) => {
+    let body = req.body;
+    const session = db.session({ 
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.WRITE 
+    });
+    try {
+        if(body.Name !== "" && body.LatinName !== "" && body.EducationLevel !== "" && body.FormOfStudy !== "" && body.TrainingPeriod){
+            await session.run(`MERGE (n:EducationalProgram {name: "${body.Name}", latin_name: "${body.LatinName}", education_level: "${body.EducationLevel}", training_period: "${body.TrainingPeriod}", form_of_study: "${body.FormOfStudy}"})`)
+        }
+        res.status(200).json({ message: "OK" });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    } finally {
+        await session.close();
+    }
+})
+
+app.post('/CreateTrainingPlan', async (req, res) => {
+    let body = req.body;
+    
+    const session = db.session({ 
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.WRITE 
+    });
+    try {
+        if(body.Id !== "" && body.PlanName !== "" && body.EducationalProgramName !== "" && body.Year !== ""){
+            await session.run(`MATCH (m:EducationalProgram {name: "${body.EducationalProgramName}"}) MERGE (n:TrainingPlan {Id: "${body.Id}", name: "${body.PlanName}", year: ${body.Year}})<-[:IS_IMPLEMENTED_IN]-(m)`)
+            if (body.Disciplines[0].Discipline){
+                for (let i = 0; i < body.Disciplines.length; i++){
+                    await session.run(`MATCH (plan:TrainingPlan {Id: "${body.Id}"}), (dis:Discipline {name: "${body.Disciplines[i].Discipline}"}) MERGE (plan)-[:HAS {total_labor_hours: ${body.Disciplines[i].TotalLaborHours}, practice_hours: ${body.Disciplines[i].PracticeHours}, laboratory_hours: ${body.Disciplines[i].LaboratoryHours}, lecture_hours: ${body.Disciplines[i].LectureHours}}]->(dis)`)
+                }
+            }
+            else {
+                for (let i = 0; i < body.Disciplines.length; i++){
+                    await session.run(`MATCH (plan:TrainingPlan {Id: "${body.Id}"}), (dis:Discipline {name: "${body.Disciplines[i].Discipline}"}) MERGE (plan)-[:HAS]->(dis)`)
+                }
+            }
+        }
+        res.status(200).json({ message: "OK" });
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
     } finally {
         await session.close();
     }
@@ -154,6 +254,16 @@ app.get('/api2', async (req, res) => {
 
     session.close()
 })
+
+app.get('/getUserId', (req, res) => {
+    const cur_user = login_list.find(user => user.email === req.query.email && user.password === req.query.password);
+    if(cur_user) {
+        res.send(cur_user)
+    } else {
+        
+    }
+})
+
 
 async function getResultByQuery(query) {
     const session = db.session({
