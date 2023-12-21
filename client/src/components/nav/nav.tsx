@@ -20,6 +20,9 @@ const Nav = () => {
 					<li>
 						<Link to="/training-plan-comparison">Сравнение учебных планов</Link>
 					</li>
+					<li>
+						<Link to="/graph-visualization">Визуализация графа</Link>
+					</li>
 				</ul>
 			</div>
 		</nav>

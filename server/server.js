@@ -117,6 +117,30 @@ app.get('/CommonDisciplines/:plan1/:plan2', async (req, res) => {
     }
 })
 
+app.get('/GraphData', async (req, res) => {
+    const session = db.session({
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.READ
+    })
+    session
+        .run('MATCH (n)-->(m) RETURN { id: id(n), label:head(labels(n)), caption:n.name } as source, { id: id(m), label:head(labels(m)), caption:m.name } as target')
+        .then(function (result) {
+            const nodes = {}
+            const links = result.records.map(r => {
+                let source = r.get('source');source.id = source.id.toNumber();
+                nodes[source.id] = source;
+                let target = r.get('target');target.id = target.id.toNumber();
+                nodes[target.id] = target;
+                return {source:source.id,target:target.id}
+            })
+            const gData = { nodes: Object.values(nodes), links: links}
+            res.json(gData)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+})
+
 app.get('/api2', async (req, res) => {
     const session = db.session({
         database: "neo4j",
