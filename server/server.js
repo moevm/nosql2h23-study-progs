@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {json} from 'express';
 import neo4j from "neo4j-driver"
 import cors from 'cors';
 
@@ -19,6 +19,18 @@ app.use(cors())
 
 app.listen(4200)
 
+app.get('/', async (req, res) => {
+    try {
+        const result = await getResultByQuery('MATCH (n) RETURN count(n);')
+        if (result.records[0]._fields[0].low === 0) {
+            await initDb()
+            res.status(200).json({res: "init db"})
+        }
+        else res.status(200).json({res: "ok"})
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+})
 
 app.get('/EducationalPrograms', async (req, res) => {
     try {
@@ -282,4 +294,26 @@ async function getResultByQuery(query) {
     session.close()
 
     return result;
+}
+
+async function initDb() {
+    const session = db.session({
+        database: "neo4j",
+        defaultAccessMode: neo4j.session.WRITE
+    })
+
+    await session.run('CALL apoc.schema.assert({}, {})')
+    await session.run('CREATE CONSTRAINT FOR (n:Discipline) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:Faculty) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:Department) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:EducationalProgram) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:Direction) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:TrainingPlan) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:DisciplineCirriculum) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:DisciplineAnnotation) REQUIRE n.neo4jImportId IS UNIQUE;')
+    await session.run('CREATE CONSTRAINT FOR (n:Practice) REQUIRE n.neo4jImportId IS UNIQUE;')
+
+    await session.run('CALL apoc.import.json("file:///nosql.json")')
+
+    session.close()
 }
