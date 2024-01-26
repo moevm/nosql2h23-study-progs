@@ -11,7 +11,7 @@ import { ICommonDisciplines } from "../interfaces/ICommonDisciplines.interface";
 export class DocumentsAPIs {
 
     static async getGraphDataForExport(): Promise<AxiosResponse<any>> {
-        return axiosInstance.get('/ExportGraph');
+       return axiosInstance.get('/ExportGraph');
     }
 
     static async getGraphData(): Promise<AxiosResponse<any>> {

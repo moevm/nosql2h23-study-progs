@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  server:
+    container_name: server
+    build: ./server
+    command: npm start
+    ports:
+      - "127.0.0.1:4200:4200"
+    networks:
+      - default
+    depends_on:
+      - neo4j
+  client:
+    build: ./client
+    command: npm start
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks:
+      - default
+    depends_on:
+      - server
+  neo4j:
+    image: neo4j:5.13.0
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - default
+    volumes:
+      - neo4j_data:/data/
+networks:
+  default:
+volumes:
+  neo4j_data:
+
