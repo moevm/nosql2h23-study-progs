@@ -27,6 +27,7 @@ services:
       - NEO4J_PLUGINS=["apoc"]
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
     container_name: neo4j
     ports:
       - "7474:7474"
@@ -35,8 +36,10 @@ services:
       - default
     volumes:
       - neo4j_data:/data/
+      - './import:/import'
 networks:
   default:
 volumes:
   neo4j_data:
+  import:
 

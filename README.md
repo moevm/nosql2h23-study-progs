@@ -1,5 +1,10 @@
 # nosql_template
 
+## Запуск
+
+```shell
+docker-compose up --build
+```
 
 ## Предварительная проверка заданий
 
