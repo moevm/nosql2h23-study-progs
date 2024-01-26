@@ -4,7 +4,8 @@ import cors from 'cors';
 
 
 const app = express()
-const db = neo4j.driver("neo4j+s://c6436e2d.databases.neo4j.io", neo4j.auth.basic('neo4j', 'rFEUHES8XeDv6A-fDZtXIFO4hbMdwauqbGkpfLq8UJg'))
+//const db = neo4j.driver("neo4j+s://c6436e2d.databases.neo4j.io", neo4j.auth.basic('neo4j', 'rFEUHES8XeDv6A-fDZtXIFO4hbMdwauqbGkpfLq8UJg'))
+const db = neo4j.driver("neo4j://neo4j:7687", neo4j.auth.basic('neo4j', 'password'))
 
 import login_list_json from "./data/loginInfoList.json" assert { type: "json" };
 const login_list = login_list_json.loginList;
